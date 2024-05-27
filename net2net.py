@@ -161,11 +161,11 @@ def wider(input_layer, next_layer, new_width, out_size=None, batch_norm=None, no
 
             # Copy Batch Normalization Values
             if batch_norm is not None:
-                nrunning_mean[i] = batch_norm.running_mean[idx]
-                nrunning_var[i] = batch_norm.running_var[idx]
+                nrunning_mean[index] = batch_norm.running_mean[idx]
+                nrunning_var[index] = batch_norm.running_var[idx]
                 if batch_norm.affine:
-                    nweight[i] = batch_norm.weight.data[idx]
-                    nbias[i] = batch_norm.bias.data[idx]
+                    nweight[index] = batch_norm.weight.data[idx]
+                    nbias[index] = batch_norm.bias.data[idx]
                 batch_norm.num_features = new_width
         new_w2[:, idx] /= len(indeces)  # Divide original outgoing weight by replication factor
 
