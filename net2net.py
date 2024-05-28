@@ -149,15 +149,12 @@ def wider(input_layer, next_layer, new_width, out_size=None, batch_norm=None, no
                                             size=input_new_columns[index].size()).to(device)
                 input_new_columns[index] += noise_tensor
 
-            # Copy outgoing weights
-            output_new_columns[:, index] = new_w2[:, idx]
+            # Copy outgoing weights and divide by replication factor
+            output_new_columns[:, index] = new_w2[:, idx] / (len(indeces) + 1)
 
             # Copy bias
             if bias is not None:
                 bias_new_columns[index] = new_bias[idx]
-
-            # Divide outgoing weights by replication factor
-            output_new_columns[:, index] /= len(indeces)
 
             # Copy Batch Normalization Values
             if batch_norm is not None:
@@ -167,7 +164,7 @@ def wider(input_layer, next_layer, new_width, out_size=None, batch_norm=None, no
                     nweight[index] = batch_norm.weight.data[idx]
                     nbias[index] = batch_norm.bias.data[idx]
                 batch_norm.num_features = new_width
-        new_w2[:, idx] /= len(indeces)  # Divide original outgoing weight by replication factor
+        new_w2[:, idx] = new_w2[:, idx] / (len(indeces) + 1)  # Divide original outgoing weight by replication factor
 
     # Insert new neurons to the hidden layers' weights
     new_w1 = torch.cat((new_w1, input_new_columns), dim=0)
